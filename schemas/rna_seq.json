@@ -1,0 +1,22 @@
+{
+  "inputs": {
+    "type": "dict",
+    "doc": "Fixed inputs, written once on the first step and unchanged after: sample_id / fq1 / fq2 / organism / genome_index"
+  },
+  "current_stage": {
+    "type": "str",
+    "doc": "qc | trim | align | sort | dedup | quant | diff | enrich | done"
+  },
+  "completed_steps": {
+    "type": "list",
+    "doc": "Names of completed stages (the model rewrites the full list each step)"
+  },
+  "key_results": {
+    "type": "dict",
+    "doc": "read_count / mapped_pct / expressed_genes / sig_degs"
+  },
+  "open_issues": {
+    "type": "list",
+    "doc": "Open issues (e.g. low mapping rate, high duplicate rate)"
+  }
+}

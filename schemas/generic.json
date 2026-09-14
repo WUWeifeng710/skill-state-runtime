@@ -1,0 +1,18 @@
+{
+  "current_stage": {
+    "type": "str",
+    "doc": "Identifier of the current stage/step"
+  },
+  "completed_steps": {
+    "type": "list",
+    "doc": "Names of completed steps"
+  },
+  "key_results": {
+    "type": "dict",
+    "doc": "Key intermediate results (key-value pairs)"
+  },
+  "open_issues": {
+    "type": "list",
+    "doc": "Open issues to resolve"
+  }
+}

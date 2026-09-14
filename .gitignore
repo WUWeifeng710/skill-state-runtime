@@ -1,0 +1,9 @@
+# Runtime artifacts from offline self-tests — never commit these.
+_demo_run/
+_rna_run/
+_step_prompt.json
+_step_answer.json
+state.json
+obs.json
+__pycache__/
+*.pyc

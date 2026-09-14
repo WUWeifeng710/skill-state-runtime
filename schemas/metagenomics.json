@@ -1,0 +1,22 @@
+{
+  "inputs": {
+    "type": "dict",
+    "doc": "Fixed inputs: sample_id / reads / platform (rhizosphere vs bulk x healthy vs diseased)"
+  },
+  "current_stage": {
+    "type": "str",
+    "doc": "qc | assemble | bin | refine | annotate | profile | done"
+  },
+  "completed_steps": {
+    "type": "list",
+    "doc": "Names of completed stages (the model rewrites the full list each step)"
+  },
+  "key_results": {
+    "type": "dict",
+    "doc": "contig_n50 / num_bins / num_mags / tax_profile"
+  },
+  "open_issues": {
+    "type": "list",
+    "doc": "Open issues (poor assembly contiguity, bin contamination, etc.)"
+  }
+}
