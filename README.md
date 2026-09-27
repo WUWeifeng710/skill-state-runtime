@@ -21,6 +21,10 @@ output:  Rt (reasoning, DISCARDED)  +  ΔΣt (validated state patch)     +  at (
 state :  Σt+1 = Σt ⊕ ΔΣt     (dict merge; null deletes a key)
 ```
 
+The runtime validates a patch's *shape*; the agent-side *judgement* rules for producing
+`ΔΣt` (minimal delta, `completed_steps` rewritten whole, no reasoning or cluster noise in
+state, drift handling) are in `SKILL.md` → *Patch discipline*.
+
 | Dimension | Conversational baseline | SKILL.state |
 |---|---|---|
 | Complexity | cumulative tokens **O(T²)** | prompt **O(1)**, cumulative **O(T)** |
