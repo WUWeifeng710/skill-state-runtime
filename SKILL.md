@@ -1,7 +1,7 @@
 ---
 name: skill-state-runtime
 agent_created: true
-version: 0.2.0
+version: 0.3.0
 description: >
   Scalable long-horizon agent execution: replace append-only conversation
   history with an explicit mutable structured state (SKILL.state, arXiv:2608.26263).
@@ -58,6 +58,36 @@ state :  Σt+1 = Σt ⊕ ΔΣt     (dict merge; null deletes a key)
   back; state is not advanced until the patch validates).
 - An external `DriftError` from the action layer becomes the next observation; the model
   re-derives `Σ` from reality — no stale history to hallucinate against.
+
+## Patch discipline (the rules the agent must follow every step)
+
+The runtime validates *shape* (keys/types); it cannot validate *judgement*. These rules are the
+difference between a lean, trustworthy `Σ` and a poisoned one. Follow them exactly:
+
+1. **Minimal delta.** Emit only the keys that changed this step. Unchanged keys are simply
+   absent from `ΔΣt` — never re-emit the whole state.
+2. **`null` deletes.** `null` is the only removal syntax and removes the key outright. Use it
+   on purpose; a `null` you did not mean is data loss the validator will never warn about.
+3. **`completed_steps` is rewritten whole.** The merge does not append. Copy the current list
+   from `Σt` and add the newly finished stage — a patch containing only the new stage silently
+   erases the history of completed work.
+4. **Numbers come from `Ot` verbatim.** A `key_results` value must be a quantity you can point
+   at in the latest observation (or the action's own report). Never derive, round, or reuse a
+   number from memory of earlier steps.
+5. **Reasoning and noise never enter `Σ`.** Your analysis lives in the `action`/answer field and
+   is discarded. Do not launder explanations into `open_issues` or `key_results`, and do not
+   paste cluster logs (slurm/sbatch output, grep noise, scheduler chatter) into the state —
+   filtering distractors out is a core function of this runtime, and the schema has no place
+   for them by design.
+6. **On `DriftError`, reality wins.** Rebuild the affected keys from the fresh observation;
+   do not trust the old `Σ` or resubmit the rejected patch unchanged.
+7. **Advance the stage as soon as the work is verifiably done.** If the next stage is blocked
+   (waiting on a job, a file, a decision), still move `current_stage` forward and record the
+   blocker in `open_issues` — do not freeze the stage while completed work accumulates in
+   `completed_steps`.
+8. **A rejected patch is fixed, not argued.** Validation errors are typically an unknown key or
+   a wrong type: correct that key and resubmit. Never delete schema keys just to make a patch
+   pass.
 
 ## How to author a schema (once per DOMAIN, not per task)
 Write a JSON file under `schemas/` describing the allowed state keys and their types.
